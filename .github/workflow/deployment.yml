@@ -1,0 +1,39 @@
+name: Deploy to EC2
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Login to AWS ECR
+      uses: aws-actions/amazon-ecr-login@v1
+
+    - name: Build and tag Docker image
+      run: |
+        docker build -t your-image-name .
+        docker tag your-image-name:latest your-ecr-repo/your-image-name:latest
+
+    - name: Push Docker image to ECR
+      run: |
+        docker push your-ecr-repo/your-image-name:latest
+
+    - name: SSH into EC2 instance
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ${{ secrets.EC2_USERNAME }}
+        key: ${{ secrets.EC2_PRIVATE_KEY }}
+        port: 22
+        script: |
+          docker stop your-container-name || true
+          docker rm your-container-name || true
+          docker pull your-ecr-repo/your-image-name:latest
+          docker run -d --name your-container-name -p 8000:8000 your-ecr-repo/your-image-name:latest
