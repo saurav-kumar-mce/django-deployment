@@ -16,22 +16,32 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y docker.io docker-compose
+          sudo apt-get install -y python3-pip
+          sudo pip3 install ansible
+
+      - name: Run Ansible playbook to install Docker and Docker Compose
+        uses: ahmadnassri/ansible-playbook-action@v2.1.0
+        with:
+          playbook: ansible/install-docker.yml
+          inventory: ansible/inventory.ini
+          extra-vars: |
+            ansible_python_interpreter=/usr/bin/python3
+          become: true
+          become-user: root
+          private_key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v2
         with:
           context: .
           push: true
-          tags: your-image-name:latest
+          tags: my-django-app:latest
 
       - name: SSH into EC2 instance
-        uses: appleboy/ssh-action@master
+        uses: webfactory/ssh-agent@v0.4.1
         with:
-          host: your-ec2-instance-ip
-          username: your-ec2-instance-username
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Deploy Docker Compose
         run: |
-          ssh your-ec2-instance-username@your-ec2-instance-ip "cd /path/to/your/project && docker-compose pull && docker-compose up -d"
+          ssh -o StrictHostKeyChecking=no ubuntu@ec2-XX-XX-XX-XX.compute-1.amazonaws.com "cd /path/to/app && docker-compose pull && docker-compose up -d"
