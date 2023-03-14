@@ -20,7 +20,7 @@ jobs:
           sudo pip3 install ansible
 
       - name: Run Ansible playbook to install Docker and Docker Compose
-        uses: generic-github-user/ansible-playbook-action@v2.1.0
+        uses: dawidd6/action-ansible-playbook@v2
         with:
           playbook: ansible/main.yml
           inventory: ansible/inventory.ini
