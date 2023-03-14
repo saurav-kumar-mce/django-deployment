@@ -44,4 +44,4 @@ jobs:
 
       - name: Deploy Docker Compose
         run: |
-          ssh -o StrictHostKeyChecking=no ubuntu@ec2-13-115-89-57.ap-northeast-1.compute.amazonaws.com "cd /django && docker-compose pull && docker-compose up -d"
+          ssh -o StrictHostKeyChecking=no ubuntu@ec2-13-231-165-225.ap-northeast-1.compute.amazonaws.com "cd /django && docker-compose pull && docker-compose up -d"
