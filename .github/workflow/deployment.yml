@@ -20,9 +20,9 @@ jobs:
           sudo pip3 install ansible
 
       - name: Run Ansible playbook to install Docker and Docker Compose
-        uses: ahmadnassri/ansible-playbook-action@v2.1.0
+        uses: saurav/ansible-playbook-action@v2.1.0
         with:
-          playbook: ansible/install-docker.yml
+          playbook: ansible/main.yml
           inventory: ansible/inventory.ini
           extra-vars: |
             ansible_python_interpreter=/usr/bin/python3
@@ -35,13 +35,13 @@ jobs:
         with:
           context: .
           push: true
-          tags: my-django-app:latest
+          tags: saurav-django-app:latest
 
       - name: SSH into EC2 instance
-        uses: webfactory/ssh-agent@v0.4.1
+        uses: saurav/ssh-agent@v0.4.1
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Deploy Docker Compose
         run: |
-          ssh -o StrictHostKeyChecking=no ubuntu@ec2-XX-XX-XX-XX.compute-1.amazonaws.com "cd /path/to/app && docker-compose pull && docker-compose up -d"
+          ssh -o StrictHostKeyChecking=no ubuntu@ec2-13-115-89-57.ap-northeast-1.compute.amazonaws.com "cd /django && docker-compose pull && docker-compose up -d"
