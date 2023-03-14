@@ -20,7 +20,7 @@ jobs:
           sudo pip3 install ansible
 
       - name: Run Ansible playbook to install Docker and Docker Compose
-        uses: django/ansible-playbook-action@v2.1.0
+        uses: #django/ansible-playbook-action@v2.1.0
         with:
           playbook: ansible/main.yml
           inventory: ansible/inventory.ini
@@ -38,7 +38,7 @@ jobs:
           tags: saurav-django-app:latest
 
       - name: SSH into EC2 instance
-        uses: django/ssh-agent@v0.4.1
+        uses: #django/ssh-agent@v0.4.1
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
