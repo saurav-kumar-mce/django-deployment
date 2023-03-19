@@ -1,6 +1,6 @@
 ---
 - name: Install Docker and Docker Compose
-  hosts: 43.207.203.95
+  hosts: all
   become: true
   tasks:
     - name: Install dependencies
